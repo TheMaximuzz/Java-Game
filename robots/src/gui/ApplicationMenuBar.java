@@ -49,7 +49,6 @@ public class ApplicationMenuBar extends JMenuBar {
             SwingUtilities.updateComponentTreeUI(this);
         } catch (ClassNotFoundException | InstantiationException
                  | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            // just ignore
         }
     }
 }

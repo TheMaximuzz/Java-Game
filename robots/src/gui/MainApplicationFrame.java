@@ -13,6 +13,7 @@ public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
+        // Установка размеров окна
         int inset = 100;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -21,13 +22,16 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
+        // Создание и добавление лог-окна
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
+        // Создание и добавление игрового окна
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
+        // Установка MenuBar
         setJMenuBar(new ApplicationMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }

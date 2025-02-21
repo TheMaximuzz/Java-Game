@@ -9,6 +9,8 @@ public class RobotsProgram
 {
     public static void main(String[] args) {
       try {
+
+        //Стили оформления:
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 //        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
