@@ -10,9 +10,11 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
-
+//just a comment ok lets test another one feature
+//test from pc
 public class GameVisualizer extends JPanel
 {
     private final Timer m_timer = initTimer();
@@ -120,30 +122,38 @@ public class GameVisualizer extends JPanel
             return max;
         return value;
     }
-    
-    private void moveRobot(double velocity, double angularVelocity, double duration)
-    {
+
+    private void moveRobot(double velocity, double angularVelocity, double duration) {
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = m_robotPositionX + velocity / angularVelocity * 
-            (Math.sin(m_robotDirection  + angularVelocity * duration) -
-                Math.sin(m_robotDirection));
-        if (!Double.isFinite(newX))
-        {
+
+        double newX = m_robotPositionX + velocity / angularVelocity *
+                (Math.sin(m_robotDirection + angularVelocity * duration) -
+                        Math.sin(m_robotDirection));
+        if (!Double.isFinite(newX)) {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
-        double newY = m_robotPositionY - velocity / angularVelocity * 
-            (Math.cos(m_robotDirection  + angularVelocity * duration) -
-                Math.cos(m_robotDirection));
-        if (!Double.isFinite(newY))
-        {
+
+        double newY = m_robotPositionY - velocity / angularVelocity *
+                (Math.cos(m_robotDirection + angularVelocity * duration) -
+                        Math.cos(m_robotDirection));
+        if (!Double.isFinite(newY)) {
             newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
         }
+
+        // Ограничение по границам окна
+        Dimension size = getSize();
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newX > size.width) newX = size.width;
+        if (newY > size.height) newY = size.height;
+
         m_robotPositionX = newX;
         m_robotPositionY = newY;
-        double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); 
+        double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
         m_robotDirection = newDirection;
     }
+
 
     private static double asNormalizedRadians(double angle)
     {
