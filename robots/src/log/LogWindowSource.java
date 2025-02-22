@@ -16,7 +16,7 @@ public class LogWindowSource
 {
     private int m_iQueueLength;
     
-    private ArrayList<LogEntry> m_messages;
+    private ArrayList<LogEntry> m_messages; // список сообщений лога (все сообщения оттуда)
     private final ArrayList<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
     
@@ -48,7 +48,15 @@ public class LogWindowSource
     public void append(LogLevel logLevel, String strMessage)
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        m_messages.add(entry);
+
+        synchronized(m_messages) {
+            if (m_messages.size() >= m_iQueueLength) {
+                m_messages.remove(0);
+            }
+            m_messages.add(entry);
+        }
+
+
         LogChangeListener [] activeListeners = m_activeListeners;
         if (activeListeners == null)
         {

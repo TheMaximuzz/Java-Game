@@ -13,6 +13,8 @@ public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
+        Logger.debug("Приложение запущено");
+
         // Установка размеров окна
         int inset = 100;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
