@@ -49,4 +49,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
     {
         EventQueue.invokeLater(this::updateLogContent);
     }
+
+    @Override
+    public void dispose() {
+        m_logSource.unregisterListener(this);
+        Logger.debug("Окно логов закрыто");
+        super.dispose();
+    }
 }
