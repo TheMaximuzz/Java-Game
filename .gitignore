@@ -1,17 +1,25 @@
+# Игнорировать все файлы и директории
+*
+
+# Кроме .java файлов
+!*.java
+
+# Игнорировать скрытые файлы и директории
+.*
+
+# Кроме .gitignore
+!.gitignore
+
+# Игнорировать специфичные директории и файлы
 /.metadata
 /robots/.settings
 /robots/bin
 eclipse.bat
-
 out/
-
 log/
 *.log
-
 *.xml
 *.gui
-
 *.class
-
 .idea/
 *.iml
