@@ -78,32 +78,48 @@ public class GameVisualizer extends JPanel {
     }
 
     protected void onModelUpdateEvent() {
-        double distance = distance(m_targetPositionX, m_targetPositionY,
-                m_robotPositionX, m_robotPositionY);
-        if (distance < 0.5) {
+        double distanceToTarget = distance(m_targetPositionX, m_targetPositionY, m_robotPositionX, m_robotPositionY);
+        if (distanceToTarget < 0.5) {
             return;
         }
-        double velocity = maxVelocity;
-        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
-        double angularVelocity = 0;
 
-        double angleDiff = angleToTarget - m_robotDirection;
-        angleDiff = asNormalizedRadians(angleDiff); // Нормализуем разницу
-
+        double targetAngle = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
+        double angleDiff = asNormalizedRadians(targetAngle - m_robotDirection);
         if (angleDiff > Math.PI) {
-            angleDiff -= 2 * Math.PI; // Выбираем кратчайший путь
+            angleDiff -= 2 * Math.PI;
         } else if (angleDiff < -Math.PI) {
             angleDiff += 2 * Math.PI;
         }
 
-        if (angleDiff > 0) {
-            angularVelocity = maxAngularVelocity;
-        } else if (angleDiff < 0) {
-            angularVelocity = -maxAngularVelocity;
+        double velocity;
+        double angularVelocity;
+        double minVelocity = 0.01; // минимальная скорость, чтобы робот не останавливался
+
+        // Закон управления pure pursuit:
+        // ω_desired = 2*v*sin(angleDiff)/distanceToTarget
+        double desiredAngularVelocity = 0;
+        if (Math.abs(Math.sin(angleDiff)) > 1e-6) {
+            desiredAngularVelocity = 2 * maxVelocity * Math.sin(angleDiff) / distanceToTarget;
+        } else {
+            desiredAngularVelocity = 0;
+        }
+
+        if (Math.abs(desiredAngularVelocity) > maxAngularVelocity) {
+            // Если требуемая угловая скорость больше максимально допустимой,
+            // уменьшаем прямолинейную скорость, чтобы уменьшить радиус поворота.
+            angularVelocity = Math.signum(desiredAngularVelocity) * maxAngularVelocity;
+            // Подбираем скорость так, чтобы r = v/ω соответствовал радиусу, необходимому для достижения цели:
+            velocity = maxAngularVelocity * distanceToTarget / (2 * Math.abs(Math.sin(angleDiff)));
+            velocity = Math.min(maxVelocity, Math.max(minVelocity, velocity));
+        } else {
+            // Если требуемая угловая скорость не превышает максимум, используем максимальную скорость.
+            velocity = maxVelocity;
+            angularVelocity = desiredAngularVelocity;
         }
 
         moveRobot(velocity, angularVelocity, 10);
     }
+
 
     private static double applyLimits(double value, double min, double max) {
         if (value < min)
