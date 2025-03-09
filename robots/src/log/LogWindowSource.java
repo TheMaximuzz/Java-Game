@@ -14,7 +14,7 @@ import java.util.Collections;
  */
 public class LogWindowSource
 {
-    private int m_iQueueLength;
+    private int m_iQueueLength = 4;
     
     private ArrayList<LogEntry> m_messages; // список сообщений лога (все сообщения оттуда)
     private final ArrayList<LogChangeListener> m_listeners;
@@ -50,7 +50,7 @@ public class LogWindowSource
         LogEntry entry = new LogEntry(logLevel, strMessage);
 
         synchronized(m_messages) {
-            if (m_messages.size() >= m_iQueueLength) {
+            if (message_size() >= m_iQueueLength) {
                 m_messages.remove(0);
             }
             m_messages.add(entry);
@@ -75,7 +75,7 @@ public class LogWindowSource
         }
     }
     
-    public int size()
+    public int message_size()
     {
         return m_messages.size();
     }
